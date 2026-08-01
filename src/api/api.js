@@ -1,6 +1,10 @@
 import axios from "axios";
 import config from "../config/app";
 
+console.log(import.meta.env.MODE);
+console.log(import.meta.env.VITE_API_BASE_URL);
+console.log("API URL:", config.apiUrl);
+
 const api = axios.create({
     baseURL: config.apiUrl,
     timeout: 10000,
