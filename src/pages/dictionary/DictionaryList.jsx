@@ -5,12 +5,12 @@ import PageHeader from "../../components/common/PageHeader";
 import SearchInput from "../../components/form/SearchInput";
 import DataTable from "../../components/table/DataTable";
 import Pagination from "../../components/pagination/Pagination";
-
+import { useNavigate } from "react-router-dom";
 
 export default function DictionaryList() {
 
 
-
+    const navigate = useNavigate();
     const {
         words,
         search,
@@ -50,6 +50,7 @@ export default function DictionaryList() {
                     </>
                 }
                 buttonText="+ Add Word"
+                onButtonClick={() => navigate("/dictionary/create")}
             />
             {/* Search */}
             <SearchInput
