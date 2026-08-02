@@ -5,6 +5,7 @@ import PageHeader from "../../components/common/PageHeader";
 import DictionaryForm from "../../components/dictionary/DictionaryForm";
 
 import { createWord } from "../../services/dictionaryService";
+import toast from "react-hot-toast";
 
 export default function DictionaryCreate() {
     const navigate = useNavigate();
@@ -35,9 +36,7 @@ export default function DictionaryCreate() {
 
         setSaving(true);
         setErrors({});
-
         try {
-
             const payload = {
                 word: form.word,
                 meaning: form.meaning,
@@ -46,23 +45,18 @@ export default function DictionaryCreate() {
                     .map(word => word.trim())
                     .filter(Boolean),
             };
-            console.log("Payload:", payload);
             const response = await createWord(payload);
-
-            console.log(response.data);
-
+            toast.success(response.data.message);
             navigate("/dictionary");
-
         } catch (error) {
-
-            console.error(error);
-
+            // validation error (expected)
             if (error.response?.status === 422) {
-
-                setErrors(error.response.data.errors || {});
-
+                setErrors(error.response?.data?.data || {});
+                toast.error(error.response.data.message);
+                return;
             }
-
+            // Unexpected errors
+            toast.error("Something went error");
         } finally {
 
             setSaving(false);
