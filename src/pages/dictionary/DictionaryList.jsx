@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     getWords,
     searchWords,
@@ -8,10 +8,11 @@ import config from "../../config/app";
 import DataTable from "../../components/table/DataTable";
 import PageHeader from "../../components/common/PageHeader";
 import Pagination from "../../components/pagination/Pagination";
+import SearchInput from "../../components/form/SearchInput";
 
 
 export default function DictionaryList() {
-
+    const [search, setSearch] = useState("");
     const [words, setWords] = useState([]);
     const [pagination, setPagination] = useState({
         currentPage: 1,
@@ -22,16 +23,17 @@ export default function DictionaryList() {
         to: 0,
     });
 
-    const [loading, setLoading] = useState(true);      // first page only
-    const [fetching, setFetching] = useState(false);   // page changes
+    const [loading, setLoading] = useState(true);
+    const [fetching, setFetching] = useState(false);
+    const [initialLoad, setInitialLoad] = useState(true);
 
     useEffect(() => {
         loadWords(1);
     }, []);
 
-    async function loadWords(page = 1) {
+    const loadWords = useCallback(async (page = 1) => {
 
-        if (words.length === 0) {
+        if (initialLoad) {
             setLoading(true);
         } else {
             setFetching(true);
@@ -39,10 +41,24 @@ export default function DictionaryList() {
 
         try {
 
-            const response = await getWords(
-                page,
-                config.pagination
-            );
+            let response;
+
+            if (search.trim()) {
+
+                response = await searchWords(
+                    search,
+                    page,
+                    config.pagination
+                );
+
+            } else {
+
+                response = await getWords(
+                    page,
+                    config.pagination
+                );
+
+            }
 
             const { data, meta } = response.data.data;
 
@@ -62,13 +78,12 @@ export default function DictionaryList() {
             console.error(error);
 
         } finally {
-
             setLoading(false);
             setFetching(false);
-
+            setInitialLoad(false);
         }
 
-    }
+    }, [search, words.length]);
 
     if (loading) {
         return <Loader text="Loading Dictionary..." />;
@@ -99,18 +114,29 @@ export default function DictionaryList() {
                 }
                 buttonText="+ Add Word"
             />
-            <Pagination
-                currentPage={pagination.currentPage}
-                lastPage={pagination.lastPage}
-                onPageChange={loadWords}
-                loading={fetching}
+            {/* Search */}
+            <SearchInput
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                onSearch={() => loadWords(1)}
+                placeholder="Search Bengali word or meaning..."
             />
+
+
             <DataTable
                 columns={[
                     { key: "word", label: "Word" },
                     { key: "meaning", label: "Meaning" },
                 ]}
                 data={words}
+            />
+
+            {/* Pagination */}
+            <Pagination
+                currentPage={pagination.currentPage}
+                lastPage={pagination.lastPage}
+                onPageChange={loadWords}
+                loading={fetching}
             />
 
         </div>
