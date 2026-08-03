@@ -5,7 +5,8 @@ import PageHeader from "../../components/common/PageHeader";
 import DictionaryForm from "../../components/dictionary/DictionaryForm";
 
 import { createWord } from "../../services/dictionaryService";
-import toast from "react-hot-toast";
+import notify from "../../helpers/notify";
+import RecentWords from "../../components/dictionary/RecentWords";
 
 export default function DictionaryCreate() {
     const navigate = useNavigate();
@@ -17,9 +18,10 @@ export default function DictionaryCreate() {
     });
 
     const [errors, setErrors] = useState({});
-
     const [saving, setSaving] = useState(false);
-
+    const [recentWords, setRecentWords] = useState(() => {
+        return JSON.parse(localStorage.getItem("recentWords") || "[]");
+    });
     function handleChange(e) {
         const { name, value } = e.target;
         setForm((prev) => ({
@@ -31,9 +33,7 @@ export default function DictionaryCreate() {
 
 
     async function handleCreate(e) {
-        
         e.preventDefault();
-
         setSaving(true);
         setErrors({});
         try {
@@ -46,20 +46,68 @@ export default function DictionaryCreate() {
                     .filter(Boolean),
             };
             const response = await createWord(payload);
-            toast.success(response.data.message);
-            navigate("/dictionary");
+            notify.success(response.data.message);
+            const newWord = {
+                ...response.data.data,
+                addedAt: new Date().toISOString(),
+            };
+            setRecentWords(prev => {
+                const updated = [newWord, ...prev].slice(0, 10);
+                localStorage.setItem(
+                    "recentWords",
+                    JSON.stringify(updated)
+                );
+                return updated;
+            });
+            // navigate("/dictionary");
         } catch (error) {
             // validation error (expected)
             if (error.response?.status === 422) {
                 setErrors(error.response?.data?.data || {});
-                toast.error(error.response.data.message);
+                notify.error(error.response.data.message);
                 return;
             }
             // Unexpected errors
-            toast.error("Something went error");
+            notify.error("Something went wrong.");
+            console.error(error);
         } finally {
-
             setSaving(false);
+        }
+
+    }
+
+    // on reset
+    function handleReset() {
+
+        if (!form.word && !form.meaning && !form.relatedWords) {
+            return;
+        }
+
+        if (window.confirm("Clear all entered information?")) {
+
+            setForm({
+                word: "",
+                meaning: "",
+                relatedWords: "",
+            });
+
+            setErrors({});
+        }
+    }
+
+    function handleClearRecent() {
+
+        if (!recentWords.length) {
+            return;
+        }
+
+        if (window.confirm("Clear recently added words?")) {
+
+            localStorage.removeItem("recentWords");
+
+            setRecentWords([]);
+
+            notify.success("Recent history cleared.");
 
         }
 
@@ -80,12 +128,16 @@ export default function DictionaryCreate() {
                     errors={errors}
                     onChange={handleChange}
                     onSubmit={handleCreate}
+                    onReset={handleReset}
                     onCancel={() => navigate("/dictionary")}
                     submitText="Save Word"
                     loading={saving}
                 />
             </div>
-
+            <RecentWords
+                words={recentWords}
+                onClear={handleClearRecent}
+            />
         </div>
 
     );
