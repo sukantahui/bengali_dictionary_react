@@ -3,6 +3,7 @@ export default function DataTable({
     data = [],
     showSerial = true,
     startIndex = 1,
+    highlightId = null,
 }) {
 
     return (
@@ -30,13 +31,12 @@ export default function DataTable({
                             <th
                                 key={column.key}
                                 style={{ width: column.width }}
-                                className={`px-6 py-4 font-semibold ${
-                                    column.align === "center"
+                                className={`px-6 py-4 font-semibold ${column.align === "center"
                                         ? "text-center"
                                         : column.align === "right"
-                                        ? "text-right"
-                                        : "text-left"
-                                }`}
+                                            ? "text-right"
+                                            : "text-left"
+                                    }`}
                             >
 
                                 {column.label}
@@ -57,7 +57,13 @@ export default function DataTable({
 
                             <tr
                                 key={row.id}
-                                className="border-t border-slate-700 transition-colors hover:bg-slate-800"
+                                className={`
+                                border-t
+                                border-slate-700
+                                transition-colors
+                                hover:bg-slate-800
+                                ${row.id === Number(highlightId)? "bg-green-900/40": ""}
+                            `}
                             >
 
                                 {showSerial && (
@@ -74,13 +80,12 @@ export default function DataTable({
 
                                     <td
                                         key={column.key}
-                                        className={`px-6 py-3 ${
-                                            column.align === "center"
+                                        className={`px-6 py-3 ${column.align === "center"
                                                 ? "text-center"
                                                 : column.align === "right"
-                                                ? "text-right"
-                                                : "text-left"
-                                        }`}
+                                                    ? "text-right"
+                                                    : "text-left"
+                                            }`}
                                     >
 
                                         {column.render

@@ -7,9 +7,9 @@ import {
 
 import config from "../config/app";
 
-export default function useDictionary() {
+export default function useDictionary(initialSearch = "") {
+    const [search, setSearch] = useState(initialSearch);
 
-    const [search, setSearch] = useState("");
 
     const [words, setWords] = useState([]);
 
@@ -22,11 +22,21 @@ export default function useDictionary() {
         to: 0,
     });
 
+    const searchDictionary = (text) => {
+        setSearch(text);
+    };
+
     const [loading, setLoading] = useState(true);
 
     const [fetching, setFetching] = useState(false);
 
     const [initialLoad, setInitialLoad] = useState(true);
+
+    useEffect(() => {
+        if (initialSearch) {
+            setSearch(initialSearch);
+        }
+    }, [initialSearch]);
 
     const loadWords = useCallback(async (page = 1) => {
 

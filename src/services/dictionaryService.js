@@ -35,6 +35,14 @@ export const latestWords = (
 export const getWord = (word) =>
     api.get(`/dictionary/word/${word}`);
 
+// Get one dictionary entry by ID
+export const getWordById = (id) =>
+    api.get(`/dictionary/${id}`);
+
+// Search by word text
+export const getWordByText = (word) =>
+    api.get(`/dictionary/word/${word}`);
+
 export const createWord = (data) =>
     api.post("/dictionary", data);
 

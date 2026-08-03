@@ -9,6 +9,7 @@ import Register from "../pages/auth/Register";
 import Dashboard from "../pages/Dashboard";
 import DictionaryList from "../pages/dictionary/DictionaryList";
 import DictionaryCreate from "../pages/dictionary/DictionaryCreate";
+import DictionaryEdit from "../pages/dictionary/DictionaryEdit";
 
 export default function AppRoutes() {
 
@@ -79,6 +80,17 @@ export default function AppRoutes() {
                     <MainLayout>
                         <ProtectedRoute>
                             <DictionaryCreate />
+                        </ProtectedRoute>
+                    </MainLayout>
+                }
+            />
+
+            <Route
+                path="/dictionary/:id/edit"
+                element={
+                    <MainLayout>
+                        <ProtectedRoute>
+                            <DictionaryEdit />
                         </ProtectedRoute>
                     </MainLayout>
                 }
