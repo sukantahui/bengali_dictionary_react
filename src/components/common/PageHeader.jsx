@@ -2,7 +2,7 @@ export default function PageHeader({
 
     title,
     subtitle = null,
-
+    stats = [],
     buttonText = null,
     onButtonClick,
 
@@ -27,7 +27,9 @@ export default function PageHeader({
 
             {/* Left */}
 
-            <div>
+            {/* Left */}
+
+            <div className="flex-1">
 
                 <h1 className="text-3xl font-bold text-white">
 
@@ -37,9 +39,47 @@ export default function PageHeader({
 
                 {subtitle && (
 
-                    <div className="mt-2 text-slate-400">
+                    <p className="mt-2 text-slate-400">
 
                         {subtitle}
+
+                    </p>
+
+                )}
+
+                {stats.length > 0 && (
+
+                    <div className="mt-6 grid gap-4 sm:grid-cols-3">
+
+                        {stats.map((stat) => (
+
+                            <div
+                                key={stat.label}
+                                className="
+                        rounded-xl
+                        border
+                        border-slate-700
+                        bg-slate-800
+                        px-5
+                        py-4
+                    "
+                            >
+
+                                <p className="text-sm text-slate-400">
+
+                                    {stat.label}
+
+                                </p>
+
+                                <p className="mt-1 text-2xl font-bold text-white">
+
+                                    {stat.value}
+
+                                </p>
+
+                            </div>
+
+                        ))}
 
                     </div>
 
@@ -49,14 +89,10 @@ export default function PageHeader({
 
             {/* Right */}
 
-            <div className="flex flex-wrap items-center gap-3">
-
+            <div className="flex flex-wrap items-start gap-3 lg:self-start">
                 {children}
-
                 {button}
-
                 {!button && buttonText && (
-
                     <button
                         type="button"
                         onClick={onButtonClick}

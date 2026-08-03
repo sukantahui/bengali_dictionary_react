@@ -106,22 +106,21 @@ export default function DictionaryList() {
             {/* Page Header */}
             <PageHeader
                 title="Dictionary"
-                subtitle={
-                    <>
-                        Showing <strong>{pagination.from}</strong>
-                        {" - "}
-                        <strong>{pagination.to}</strong>
-                        {" of "}
-                        <strong>{pagination.total}</strong>
-                        {" words"}
-
-                        <br />
-
-                        Page <strong>{pagination.currentPage}</strong>
-                        {" of "}
-                        <strong>{pagination.lastPage}</strong>
-                    </>
-                }
+                subtitle="Manage all Bengali dictionary entries."
+                stats={[
+                    {
+                        label: "Total Words",
+                        value: pagination.total,
+                    },
+                    {
+                        label: "Showing",
+                        value: `${pagination.from}-${pagination.to}`,
+                    },
+                    {
+                        label: "Page",
+                        value: `${pagination.currentPage}/${pagination.lastPage}`,
+                    },
+                ]}
                 buttonText="+ Add Word"
                 onButtonClick={() => navigate("/dictionary/create")}
             />
