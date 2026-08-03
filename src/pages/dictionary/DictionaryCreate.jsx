@@ -31,13 +31,31 @@ export default function DictionaryCreate() {
         }));
     }
 
-
+    function clearForm() {
+        setForm({
+            word: "",
+            meaning: "",
+            relatedWords: "",
+        });
+        setErrors({});
+    }
 
     async function handleCreate(e) {
         e.preventDefault();
+        const confirmed = await alert.confirm({
+            title: "Save Word?",
+            text: "Do you want to save this dictionary entry?",
+            confirmText: "Save",
+            icon: "question",
+        });
+
+        if (!confirmed) {
+            return;
+        }
         setSaving(true);
         setErrors({});
         try {
+
             const payload = {
                 word: form.word,
                 meaning: form.meaning,
@@ -46,6 +64,7 @@ export default function DictionaryCreate() {
                     .map(word => word.trim())
                     .filter(Boolean),
             };
+
             const response = await createWord(payload);
             notify.success(response.data.message);
             const newWord = {
@@ -53,55 +72,58 @@ export default function DictionaryCreate() {
                 addedAt: new Date().toISOString(),
             };
             setRecentWords(prev => {
+
                 const updated = [newWord, ...prev].slice(0, 10);
+
                 localStorage.setItem(
                     "recentWords",
                     JSON.stringify(updated)
                 );
+
                 return updated;
+
             });
-            // navigate("/dictionary");
+
+            clearForm();
+
         } catch (error) {
-            // validation error (expected)
+
             if (error.response?.status === 422) {
-                setErrors(error.response?.data?.data || {});
+
+                setErrors(error.response.data.data || {});
+
                 notify.error(error.response.data.message);
+
                 return;
+
             }
-            // Unexpected errors
+
             notify.error("Something went wrong.");
+
             console.error(error);
+
         } finally {
+
             setSaving(false);
+
         }
 
     }
 
     // on reset
     async function handleReset() {
-
         if (!form.word && !form.meaning && !form.relatedWords) {
             return;
         }
-
         const confirmed = await alert.confirm({
             title: "Reset Form?",
             text: "All entered information will be removed.",
             confirmText: "Reset",
         });
 
-        if (!confirmed) {
-            return;
+        if (confirmed) {
+            clearForm();
         }
-
-        setForm({
-            word: "",
-            meaning: "",
-            relatedWords: "",
-        });
-
-        setErrors({});
-
     }
 
     async function handleClearRecent() {
