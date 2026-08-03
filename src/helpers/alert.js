@@ -19,7 +19,10 @@ const alert = {
             confirmButtonText: confirmText,
             cancelButtonText: cancelText,
 
-            confirmButtonColor: "#2563eb",
+            confirmButtonColor:
+                icon === "warning"
+                    ? "#dc2626"
+                    : "#2563eb",
             cancelButtonColor: "#64748b",
 
             background: "#1e293b",
