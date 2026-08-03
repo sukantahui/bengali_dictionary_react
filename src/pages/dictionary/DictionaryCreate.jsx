@@ -7,6 +7,7 @@ import DictionaryForm from "../../components/dictionary/DictionaryForm";
 import { createWord } from "../../services/dictionaryService";
 import notify from "../../helpers/notify";
 import RecentWords from "../../components/dictionary/RecentWords";
+import alert from "../../helpers/alert";
 
 export default function DictionaryCreate() {
     const navigate = useNavigate();
@@ -77,40 +78,51 @@ export default function DictionaryCreate() {
     }
 
     // on reset
-    function handleReset() {
+    async function handleReset() {
 
         if (!form.word && !form.meaning && !form.relatedWords) {
             return;
         }
 
-        if (window.confirm("Clear all entered information?")) {
+        const confirmed = await alert.confirm({
+            title: "Reset Form?",
+            text: "All entered information will be removed.",
+            confirmText: "Reset",
+        });
 
-            setForm({
-                word: "",
-                meaning: "",
-                relatedWords: "",
-            });
-
-            setErrors({});
+        if (!confirmed) {
+            return;
         }
+
+        setForm({
+            word: "",
+            meaning: "",
+            relatedWords: "",
+        });
+
+        setErrors({});
+
     }
 
-    function handleClearRecent() {
+    async function handleClearRecent() {
 
         if (!recentWords.length) {
             return;
         }
+        const confirmed = await alert.confirm({
 
-        if (window.confirm("Clear recently added words?")) {
+            title: "Clear Recent History?",
+            text: "This action cannot be undone.",
+            confirmText: "Clear",
 
-            localStorage.removeItem("recentWords");
+        });
 
-            setRecentWords([]);
-
-            notify.success("Recent history cleared.");
-
+        if (!confirmed) {
+            return;
         }
-
+        localStorage.removeItem("recentWords");
+        setRecentWords([]);
+        notify.success("Recent history cleared.");
     }
 
     return (
