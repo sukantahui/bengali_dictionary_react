@@ -49,7 +49,7 @@ export default function SearchInput({
                     bg-slate-800
                     py-3
                     pl-12
-                    pr-28
+                    pr-64
                     text-white
                     outline-none
                     transition
@@ -59,57 +59,71 @@ export default function SearchInput({
                 "
             />
 
-            {/* Clear Button */}
+            {/* Right Side Buttons */}
 
-            {value && (
-
-                <button
-                    type="button"
-                    onClick={onClear}
-                    title="Clear Search"
-                    className="
-                        absolute
-                        right-16
-                        top-1/2
-                        -translate-y-1/2
-                        rounded-full
-                        p-1
-                        text-slate-400
-                        transition
-                        hover:bg-slate-700
-                        hover:text-white
-                    "
-                >
-
-                    <X size={18} />
-
-                </button>
-
-            )}
-
-            {/* Search Button */}
-
-            <button
-                type="button"
-                onClick={onSearch}
+            <div
                 className="
                     absolute
-                    right-2
+                    right-3
                     top-1/2
+                    flex
                     -translate-y-1/2
-                    rounded-lg
-                    bg-blue-600
-                    px-3
-                    py-1.5
-                    text-sm
-                    text-white
-                    hover:bg-blue-700
+                    items-center
+                    gap-3
                 "
             >
 
-                Search
+                {value && (
 
-            </button>
+                    <button
+                        type="button"
+                        onClick={onClear}
+                        className="
+                            flex
+                            items-center
+                            gap-1
+                            rounded-lg
+                            border
+                            border-slate-600
+                            px-3
+                            py-2
+                            text-sm
+                            text-slate-300
+                            transition
+                            hover:border-red-500
+                            hover:text-red-400
+                            hover:bg-slate-700
+                        "
+                    >
+                        <X size={16} />
+                        Clear
+                    </button>
+
+                )}
+
+                <button
+                    type="button"
+                    onClick={onSearch}
+                    className="
+                        flex
+                        items-center
+                        gap-2
+                        rounded-lg
+                        bg-blue-600
+                        px-4
+                        py-2
+                        text-sm
+                        font-medium
+                        text-white
+                        transition
+                        hover:bg-blue-700
+                    "
+                >
+                    <Search size={16} />
+                    Search
+                </button>
+
+            </div>
 
         </div>
 
