@@ -1,15 +1,23 @@
 import { Routes, Route } from "react-router-dom";
 
+import PublicLayout from "../layouts/PublicLayout";
 import MainLayout from "../layouts/MainLayout";
+
 import ProtectedRoute from "./ProtectedRoute";
 
-import Home from "../pages/Home";
+import Home from "../pages/public/Home";
+import About from "../pages/public/About";
+
 import Login from "../pages/auth/Login";
-import Register from "../pages/auth/Register";
+
 import Dashboard from "../pages/Dashboard";
+
 import DictionaryList from "../pages/dictionary/DictionaryList";
 import DictionaryCreate from "../pages/dictionary/DictionaryCreate";
 import DictionaryEdit from "../pages/dictionary/DictionaryEdit";
+
+import NotFound from "../pages/errors/NotFound";
+import SearchResults from "../pages/public/SearchResults";
 
 export default function AppRoutes() {
 
@@ -17,83 +25,79 @@ export default function AppRoutes() {
 
         <Routes>
 
-            {/* ----------------------------------------------
-             | Public Routes
-             ---------------------------------------------- */}
+            {/* =======================
+                    PUBLIC ROUTES
+            ======================== */}
 
-            <Route
-                path="/"
-                element={
-                    <MainLayout>
-                        <Home />
-                    </MainLayout>
-                }
-            />
+            <Route element={<PublicLayout />}>
+
+                <Route
+                    path="/"
+                    element={<Home />}
+                />
+
+                <Route
+                    path="/about"
+                    element={<About />}
+                />
+
+                <Route
+                    path="/search"
+                    element={<SearchResults />}
+                />
+
+            </Route>
+
+            {/* =======================
+                    AUTH
+            ======================== */}
 
             <Route
                 path="/login"
-                element={
-                    <MainLayout>
-                        <Login />
-                    </MainLayout>
-                }
+                element={<Login />}
             />
 
-            <Route
-                path="/register"
-                element={
-                    <MainLayout>
-                        <Register />
-                    </MainLayout>
-                }
-            />
-
-            {/* ----------------------------------------------
-             | Protected Routes
-             ---------------------------------------------- */}
+            {/* =======================
+                  PROTECTED ROUTES
+            ======================== */}
 
             <Route
-                path="/dashboard"
                 element={
                     <ProtectedRoute>
-                        <MainLayout>
-                            <Dashboard />
-                        </MainLayout>
+                        <MainLayout />
                     </ProtectedRoute>
                 }
-            />
+            >
+
+                <Route
+                    path="/dashboard"
+                    element={<Dashboard />}
+                />
+
+                <Route
+                    path="/dictionary"
+                    element={<DictionaryList />}
+                />
+
+                <Route
+                    path="/dictionary/create"
+                    element={<DictionaryCreate />}
+                />
+
+                <Route
+                    path="/dictionary/:id/edit"
+                    element={<DictionaryEdit />}
+                />
+
+            </Route>
+
+            {/* =======================
+                    404
+            ======================== */}
 
             <Route
-                path="/dictionary"
-                element={
-                    <ProtectedRoute>
-                        <MainLayout>
-                            <DictionaryList />
-                        </MainLayout>
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/dictionary/create"
-                element={
-                    <MainLayout>
-                        <ProtectedRoute>
-                            <DictionaryCreate />
-                        </ProtectedRoute>
-                    </MainLayout>
-                }
-            />
-
-            <Route
-                path="/dictionary/:id/edit"
-                element={
-                    <MainLayout>
-                        <ProtectedRoute>
-                            <DictionaryEdit />
-                        </ProtectedRoute>
-                    </MainLayout>
-                }
+                path="*"
+                element={<NotFound />}
             />
 
         </Routes>
