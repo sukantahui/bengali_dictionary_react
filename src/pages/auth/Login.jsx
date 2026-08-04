@@ -18,7 +18,7 @@ export default function Login() {
             console.log(data);
             await login(data);
             console.log("Login successful");
-            navigate("/");
+            navigate("/dashboard", { replace: true });
         } catch (error) {
             console.log(error.response);
             alert(error.response?.data?.message || "Login failed.");
